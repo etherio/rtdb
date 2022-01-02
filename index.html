@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1" />
+  <title>Ethereal</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/milligram/dist/milligram.min.css">
+</head>
+
+<body>
+  <div id="app">
+    <main v-if="loggedIn">
+      <nav style="display:flex; justify-content:space-between; align-items:center;margin:0 5px;">
+        <div>
+          <a href="#" @click="page='user_profile'">User Profile</a>
+        </div>
+        <div>
+          <a href="#" @click="fetchDbs">My Database</a>
+        </div>
+        <div>
+          <a href="#">X</a>
+        </div>
+      </nav>
+      <hr />
+    </main>
+    <section v-if="loggedIn && page=='user_profile'">
+      <div>
+        <h4>User Profile</h4>
+        <fieldset>
+          <label for="uid">UID</label>
+          <input type="text" autocapitalize="off" readonly v-model="currentUser.uid" @click="selectAll" />
+        </fieldset>
+        <fieldset>
+          <label for="accessToken">Access Token</label>
+          <input type="text" id="accessToken" autocapitalize="off" readonly v-model="accessToken" @click="selectAll" />
+        </fieldset>
+        <!-- <fieldset v-if="accessToken">
+          <label for="data">Data</label>
+          <pre><code>{{ JSON.stringify(decodedId, null, 2) }}</code></pre>
+        </fieldset> -->
+        <fieldset v-if="accessToken">
+          <label for="issued">Issued At
+            <code v-if="accessToken">{{ new Date(currentDate - issuedDate).toISOString().substr(11, 8) }}</code>
+          </label>
+          <input type="text" id="issued" autocapitalize="off" readonly :value="issuedDate.toString()" />
+        </fieldset>
+        <fieldset v-if="accessToken">
+          <label for="lifetime">Life Time (min)</label>
+          <input type="number" id="lifetime" autocapitalize="off" readonly :value="Math.round((expiredDate - issuedDate) / 60000)" />
+        </fieldset>
+        <fieldset v-if="accessToken">
+          <label for="expired">Expired At <code v-if="accessToken">{{ new Date(expiredDate - currentDate).toISOString().substr(11, 8) }}</code>
+          </label>
+          <input type="text" id="expired" autocapitalize="off" readonly :value="expiredDate.toString()" />
+        </fieldset>
+      </div>
+      <hr />
+      <div>
+        <button @click="signOut">Log Out</button>
+      </div>
+    </section>
+    <section v-if="loggedIn && page=='my_database'">
+      <h4>My Database</h4>
+      <hr />
+      <table v-if="dbs">
+        <thead>
+          <tr>
+            <th>Project ID</th>
+            <th>Database URL</th>
+            <th>Secret Token</th>
+            <th>Created At</th>
+            <th>
+              <span style="visibility:hidden">actions</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(db, i) in dbs" :key="`db-${i}`">
+            <td>
+              <code>{{ db.id }}</code>
+            </td>
+            <td>
+              <input :value="db.databaseUrl" readonly style="width:320px; margin:5px" @click="selectAll" />
+            </td>
+            <td>
+              <input style="width:220px; margin:5px" readonly @click="selectAll($event),(db._displayed=!db._displayed)" :type="db._displayed?'text':'password'" :value="db.secretToken" />
+            </td>
+            <td>{{ new Date(db.createdAt||0).toLocaleString() }}</td>
+            <td>
+              <button @click="deleteDb(db)" style="background:red; color:white">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr />
+      <h6>Create</h6>
+      <form @submit.prevent="createDb">
+        <fieldset>
+          <label>Database URL</label>
+          <input type="url" v-model="created.databaseUrl" required />
+        </fieldset>
+        <fieldset>
+          <label>Secret Token</label>
+          <input type="text" autocapitalize="off" v-model="created.secretToken" required />
+        </fieldset>
+        <button type="submit">Create</button>
+      </form>
+    </section>
+    <section v-if="!loggedIn">
+      <form @submit.prevent="signIn">
+        <fieldset>
+          <label for="email">Email</label>
+          <input type="email" id="email" v-model="login.email" required />
+        </fieldset>
+        <fieldset>
+          <label for="password">Password</label>
+          <input type="password" id="password" v-model="login.password" required />
+        </fieldset>
+        <div style="background:red; border-radius:8px; padding:4px 5px; color:white; margin:2px 4px" v-if="login.error">
+          {{ login.error }}
+        </div>
+        <button type="submit">
+          Log In
+        </button>
+      </form>
+    </section>
+  </div>
+  <script src="https://ethereal-tech.web.app/__/firebase/8.2.2/firebase-app.js"></script>
+  <script src="https://ethereal-tech.web.app/__/firebase/8.2.2/firebase-auth.js"></script>
+  <script src="https://ethereal-tech.web.app/__/firebase/8.2.2/firebase-database.js"></script>
+  <script src="https://ethereal-tech.web.app/__/firebase/8.2.2/firebase-storage.js"></script>
+  <script src="https://ethereal-tech.web.app/__/firebase/init.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-router@3.5.3/dist/vue-router.min.js"></script>
+  <script src="index.js"></script>
+</body>
+
+</html>
