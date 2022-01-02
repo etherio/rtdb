@@ -4,25 +4,38 @@
 <head>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1" />
   <title>Ethereal</title>
+  <style>
+  html,body{margin:0;padding:0;}
+  #app{padding:5px 10px;}
+  </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/milligram/dist/milligram.min.css">
+  <script src="https://ethereal-tech.web.app/__/firebase/8.2.2/firebase-app.js"></script>
+  <script src="https://ethereal-tech.web.app/__/firebase/8.2.2/firebase-auth.js"></script>
+  <script src="https://ethereal-tech.web.app/__/firebase/8.2.2/firebase-database.js"></script>
+  <script src="https://ethereal-tech.web.app/__/firebase/8.2.2/firebase-storage.js"></script>
+  <script src="https://ethereal-tech.web.app/__/firebase/init.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.24.0/dist/axios.min.js"></script>
 </head>
 
 <body>
-  <div id="app">
+  <div id="app" :style="{visibility:loggedIn===undefined?'hidden':'visible',transition:'all .4s ease-in-out',background:loggedIn===undefined?'brown':'unset'}">
+    <!-- navigation menu -->
     <main v-if="loggedIn">
       <nav style="display:flex; justify-content:space-between; align-items:center;margin:0 5px;">
         <div>
-          <a href="#" @click="page='user_profile'">User Profile</a>
+          <a href="javascript:void(0);" @click="page='user_profile'">User Profile</a>
         </div>
         <div>
-          <a href="#" @click="fetchDbs">My Database</a>
+          <a href="javascript:void(0);" @click="fetchDbs">My Database</a>
         </div>
         <div>
-          <a href="#">X</a>
+          <a href="?">Reload</a>
         </div>
       </nav>
       <hr />
     </main>
+    <!-- user profile section -->
     <section v-if="loggedIn && page=='user_profile'">
       <div>
         <h4>User Profile</h4>
@@ -59,9 +72,16 @@
         <button @click="signOut">Log Out</button>
       </div>
     </section>
+    <!-- my database section -->
     <section v-if="loggedIn && page=='my_database'">
-      <h4>My Database</h4>
+      <fieldset v-if="selectedDb">
+        <label>Selected Database</label>
+        <input type="text" :value="selectedDb.id" readonly />
+        <input type="url" :value="selectedDb.databaseUrl||''" readonly />
+      </fieldset>
+      <button v-if="selectedDb" type="button" @click="clearDb">Clear</button>
       <hr />
+      <h4>My Database</h4>
       <table v-if="dbs">
         <thead>
           <tr style="text-align:center">
@@ -86,14 +106,15 @@
             <td style="text-align:center">
               <pre style="display:block; width:220px">{{ new Date(db.createdAt||0).toLocaleString() }}</pre>
             </td>
-            <td style="text-align:center">
-              <button @click="deleteDb(db)" style="background:red; color:white">Delete</button>
+            <td style="text-align:center; min-width:80px">
+              <a title="Use database" href="javascript:void(0);" @click="useDb(db)" style="padding:4px">✔️</a>
+              <a title="Delete database" href="javascript:void(0);" @click="deleteDb(db)" style="padding:4px">❌</a>
             </td>
           </tr>
         </tbody>
       </table>
       <hr />
-      <h6>Create</h6>
+      <h4>Add new database</h4>
       <form @submit.prevent="createDb">
         <fieldset>
           <label>Database URL</label>
@@ -106,6 +127,7 @@
         <button type="submit">Create</button>
       </form>
     </section>
+    <!-- login section -->
     <section v-if="!loggedIn">
       <form @submit.prevent="signIn">
         <fieldset>
@@ -125,13 +147,6 @@
       </form>
     </section>
   </div>
-  <script src="https://ethereal-tech.web.app/__/firebase/8.2.2/firebase-app.js"></script>
-  <script src="https://ethereal-tech.web.app/__/firebase/8.2.2/firebase-auth.js"></script>
-  <script src="https://ethereal-tech.web.app/__/firebase/8.2.2/firebase-database.js"></script>
-  <script src="https://ethereal-tech.web.app/__/firebase/8.2.2/firebase-storage.js"></script>
-  <script src="https://ethereal-tech.web.app/__/firebase/init.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue-router@3.5.3/dist/vue-router.min.js"></script>
   <script src="index.js"></script>
 </body>
 
