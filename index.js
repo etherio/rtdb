@@ -34,6 +34,8 @@ new Vue({
       secretToken: '',
     },
     selectedDb: undefined,
+    error: null,
+    dbRules: '',
   },
   methods: {
     handleAuth(userOrNull) {
@@ -109,9 +111,21 @@ new Vue({
       this.selectedDb = ls.db = selected;
     },
     clearDb() {
-      ls.clearDb();
       this.selectedDb = ls.clearDb();
-    }
+    },
+    async reloadDbRules() {
+      this.page = 'db_rules';
+      this.error = null;
+      try {
+        const url = new URL(this.selectedDb.databaseUrl);
+        url.searchParams.append('auth', this.selectedDb.secretToken);
+        url.pathname = '/.settings/rules.json';
+        const { data } = await axios.get(url.toString());
+        this.dbRules = JSON.stringify(data, null, 2);
+      } catch(e) {
+        this.error = e.message;
+      }
+    },
   },
   computed: {
     decodedId() {
@@ -136,10 +150,14 @@ new Vue({
       this.currentDate = new Date();
     }, 1000);
     // setTimeout(()=>this.reloadDb(), 800);
+    this.selectedDb = ls.db;
   },
 }).$mount('#app');
 
-function testConnection({ databaseUrl, secretToken }) {
+function testConnection({ 
+  databaseUrl,
+  secretToken
+}) {
   const url = new URL(databaseUrl);
   url.searchParams.append('auth', secretToken);
   return axios.get(url.toString()).then(({ status, data }) => {

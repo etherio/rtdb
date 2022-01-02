@@ -1,0 +1,18 @@
+.nav {
+  font-size: small;
+  text-decoration: underline;
+}
+
+.error {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgb(224, 87, 64);
+  padding: 4px auto;
+  text-align: center;
+  font-size: small;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+  height: 74px;
+}
