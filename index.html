@@ -64,8 +64,8 @@
       <hr />
       <table v-if="dbs">
         <thead>
-          <tr>
-            <th>Project ID</th>
+          <tr style="text-align:center">
+            <th>#</th>
             <th>Database URL</th>
             <th>Secret Token</th>
             <th>Created At</th>
@@ -76,17 +76,17 @@
         </thead>
         <tbody>
           <tr v-for="(db, i) in dbs" :key="`db-${i}`">
-            <td>
-              <code>{{ db.id }}</code>
-            </td>
+            <td><code>{{i+1}}</code></td>
             <td>
               <input :value="db.databaseUrl" readonly style="width:320px; margin:5px" @click="selectAll" />
             </td>
             <td>
               <input style="width:220px; margin:5px" readonly @click="selectAll($event),(db._displayed=!db._displayed)" :type="db._displayed?'text':'password'" :value="db.secretToken" />
             </td>
-            <td>{{ new Date(db.createdAt||0).toLocaleString() }}</td>
-            <td>
+            <td style="text-align:center">
+              <pre style="display:block; width:220px">{{ new Date(db.createdAt||0).toLocaleString() }}</pre>
+            </td>
+            <td style="text-align:center">
               <button @click="deleteDb(db)" style="background:red; color:white">Delete</button>
             </td>
           </tr>
