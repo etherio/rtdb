@@ -122,6 +122,11 @@ new Vue({
         url.pathname = '/.settings/rules.json';
         const { data } = await axios.get(url.toString());
         this.dbRules = JSON.stringify(data, null, 2);
+        setTimeout(() => hljs
+            .highlightElement(
+              document
+                .querySelector('.language-json')
+              ));
       } catch(e) {
         this.error = e.message;
       }
