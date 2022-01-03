@@ -44,7 +44,7 @@ new Vue({
       this.loggedIn && this.refreshToken();
     },
     async signIn() {
-      this.login.error = '';  
+      this.login.error = '';
       try {
         const { email, password } = this.login;
         await auth
@@ -115,6 +115,7 @@ new Vue({
     },
     async reloadDbRules() {
       this.page = 'db_rules';
+      this.dbRules = '';
       this.error = null;
       try {
         const url = new URL(this.selectedDb.databaseUrl);
@@ -122,14 +123,17 @@ new Vue({
         url.pathname = '/.settings/rules.json';
         const { data } = await axios.get(url.toString());
         this.dbRules = JSON.stringify(data, null, 2);
-        setTimeout(() => hljs
-            .highlightElement(
-              document
-                .querySelector('.language-json')
-              ));
-      } catch(e) {
+        requestAnimationFrame(this.highlight);
+      } catch (e) {
         this.error = e.message;
       }
+    },
+    highlight(event) {
+      try {
+        const el = document.querySelector('.language-json');
+        if (!el) return console.warn('highlight element not found');
+        hljs.highlightElement(el);
+      } catch (e) {}
     },
   },
   computed: {
@@ -159,7 +163,7 @@ new Vue({
   },
 }).$mount('#app');
 
-function testConnection({ 
+function testConnection({
   databaseUrl,
   secretToken
 }) {
