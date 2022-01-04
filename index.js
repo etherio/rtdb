@@ -194,9 +194,17 @@ window.addEventListener('DOMContentLoaded', () => {
   const iframeLink = new URL(fbBtn.src);
   const sharedLink = new URL(iframeLink.searchParams.get('href'));
   const params = new URLSearchParams(location.search);
+  
   if (params.has('id')) {
     sharedLink.pathname = ['articles', params.get('id')].join('/');
     fbBtn.src = sharedLink.toString();
-    alert(fbBtn.src);
+    let h = document.createElement('h5');
+    let c = document.createElement('code');
+    c.innerText = fbBtn.src;
+    h.appendChild(c);
+    document.body.appendChild(h);
+  } else {
+    console.log('adding id',new Date);
+    location.replace('?id=509528');
   }
 });
