@@ -193,9 +193,10 @@ window.addEventListener('DOMContentLoaded', () => {
   const fbBtn = document.querySelector('iframe#fb-like');
   const iframeLink = new URL(fbBtn.src);
   const sharedLink = new URL(iframeLink.searchParams.get('href'));
-  const params = new searchParams(location.search);
+  const params = new URLSearchParams(location.search);
   if (params.has('id')) {
     sharedLink.pathname = ['articles', params.get('id')].join('/');
     fbBtn.src = sharedLink.toString();
+    alert(fbBtn.src);
   }
 });
