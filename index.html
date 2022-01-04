@@ -66,9 +66,6 @@
             <label for="accessToken">Access Token</label>
             <input type="text" id="accessToken" autocapitalize="off" readonly v-model="accessToken" @click="selectAll" />
           </fieldset>
-          <label for="data">Data</label>
-          <pre><code>{{ JSON.stringify(decodedId, null, 2) }}</code></pre>
-        </fieldset> -->
           <fieldset v-if="accessToken">
             <label for="issued">Issued At
               <code v-if="accessToken">{{ new Date(currentDate - issuedDate).toISOString().substr(11, 8) }}</code>
@@ -175,6 +172,7 @@
       </form>
     </section>
   </div>
+  <iframe id="fb-like" src="https://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.nweoo.com%2Farticles%2F01042022080609&width=90&layout=button_count&action=like&size=small&share=false&height=21&appId=942678683197460" width="90" height="21" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
   <script src="index.js"></script>
 </body>
 

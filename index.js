@@ -188,3 +188,14 @@ function unserialize(raw) {
     return raw;
   }
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+  const fbBtn = document.querySelector('iframe#fb-like');
+  const iframeLink = new URL(fbBtn.src);
+  const sharedLink = new URL(iframeLink.searchParams.get('href'));
+  const params = new searchParams(location.search);
+  if (params.has('id')) {
+    sharedLink.pathname = ['articles', params.get('id')].join('/');
+    fbBtn.src = sharedLink.toString();
+  }
+});
